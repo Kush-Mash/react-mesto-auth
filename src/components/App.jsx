@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Route, Routes, Navigate } from "react-router-dom";
 import CurrentUserContext from "../contexts/CurrentUserContext.js";
 import { api } from "../utils/Api.js";
 import Header from "./Header.jsx";
@@ -9,6 +10,8 @@ import EditProfilePopup from "./EditProfilePopup.jsx";
 import EditAvatarPopup from "./EditAvatarPopup.jsx";
 import AddPlacePopup from "./AddPlacePopup.jsx";
 import ConfirmationPopup from "./ConfirmationPopup.jsx";
+import Login from "./Login.jsx";
+import Register from "./Register.jsx";
 
 function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
@@ -19,6 +22,7 @@ function App() {
   const [selectedCard, setSelectedCard] = useState({});
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
+  const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
     Promise.all([api.getCurrentUser(), api.getServerCards()])
@@ -129,16 +133,32 @@ function App() {
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
         <Header />
-        <Main
-          onEditAvatar={handleEditAvatarClick}
-          onEditProfile={handleEditProfileClick}
-          onAddPlace={handleAddPlaceClick}
-          cards={cards}
-          onCardClick={handleCardClick}
-          onCardLike={handleCardLike}
-          onCardDelete={handleTrashClick}
-        />
-        <Footer />
+        <Routes>
+          <Route path="/sign-in" element={<Login />}></Route>
+          <Route path="/sign-up" element={<Register />}></Route>
+          <Route
+            element={<Main />}
+            path="/"
+            onEditAvatar={handleEditAvatarClick}
+            onEditProfile={handleEditProfileClick}
+            onAddPlace={handleAddPlaceClick}
+            cards={cards}
+            onCardClick={handleCardClick}
+            onCardLike={handleCardLike}
+            onCardDelete={handleTrashClick}
+          />
+          <Route
+            path="*"
+            element={
+              loggedIn ? (
+                <Navigate to="/" replace />
+              ) : (
+                <Navigate to="/sign-in" replace />
+              )
+            }
+          />
+        </Routes>
+        {loggedIn && <Footer />}
 
         <EditAvatarPopup
           isOpen={isEditAvatarPopupOpen}

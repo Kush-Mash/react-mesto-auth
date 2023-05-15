@@ -134,9 +134,6 @@ function App() {
       });
   }
 
-  // componentDidMount() {
-  //   // позже здесь тоже нужно будет проверить токен пользователя!
-  // };
   const handleLogin = () => {
     setLoggedIn(true);
   }

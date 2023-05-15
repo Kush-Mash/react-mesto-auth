@@ -20,6 +20,10 @@
 
 @import url(./blocks/header/__link/header__link.css);
 
+@import url(./blocks/header/__email/header__email.css);
+
+@import url(./blocks/header/__exit/header__exit.css);
+
 @import url(./blocks/profile/__avatar/profile__avatar.css);
 
 @import url(./blocks/profile/__avatar-edit-button/profile__avatar-edit-button.css);

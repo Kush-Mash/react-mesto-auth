@@ -51,7 +51,7 @@ class Api {
       body: JSON.stringify({
         name: data.name,
         about: data.job,
-      }),
+      })
     }).then(this._getJson);
   }
 

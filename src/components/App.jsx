@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Route, Routes, Navigate } from "react-router-dom";
+import { Route, Routes, Navigate, useNavigate } from "react-router-dom";
 import CurrentUserContext from "../contexts/CurrentUserContext.js";
 import { api } from "../utils/Api.js";
+import * as auth from "../utils/Auth.js"
 import Header from "./Header.jsx";
 import Main from "./Main.jsx";
 import Footer from "./Footer.jsx";
@@ -12,6 +13,7 @@ import AddPlacePopup from "./AddPlacePopup.jsx";
 import ConfirmationPopup from "./ConfirmationPopup.jsx";
 import Login from "./Login.jsx";
 import Register from "./Register.jsx";
+import ProtectedRoute from "./ProtectedRoute";
 
 function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
@@ -23,6 +25,9 @@ function App() {
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
   const [loggedIn, setLoggedIn] = useState(false);
+  const [email, setEmail] = useState('');
+  const [userData, setUserData] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     Promise.all([api.getCurrentUser(), api.getServerCards()])
@@ -129,34 +134,71 @@ function App() {
       });
   }
 
+  // componentDidMount() {
+  //   // позже здесь тоже нужно будет проверить токен пользователя!
+  // };
+  const handleLogin = () => {
+    setLoggedIn(true);
+  }
+
+  function signOut() {
+    localStorage.removeItem('jwt');
+    setLoggedIn(false);
+    setEmail('');
+    navigate('/sign-in', { replace: true });
+  }
+
+  useEffect(() => {
+    tokenCheck();
+  }, [])
+
+  const tokenCheck = () => {
+    // если у пользователя есть токен в localStorage,
+    // эта функция проверит, действующий он или нет
+    const jwt = localStorage.getItem('jwt');
+    if (jwt){
+      // проверим токен
+      auth.checkToken(jwt)
+        .then((res) => {
+          const userData = {
+            _id: res._id,
+            email: res.email
+          }
+          // авторизуем пользователя
+          setLoggedIn(true);
+          // setUserData(res);
+          setEmail(userData.email);
+          navigate('/', {replace: true});
+          console.log(email);
+        })
+        .catch(err => console.log(err))
+    }
+  }
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
-        <Header />
+        <Header email={email} onSignOut={signOut} />
         <Routes>
-          <Route path="/sign-in" element={<Login />}></Route>
-          <Route path="/sign-up" element={<Register />}></Route>
           <Route
-            element={<Main />}
             path="/"
-            onEditAvatar={handleEditAvatarClick}
-            onEditProfile={handleEditProfileClick}
-            onAddPlace={handleAddPlaceClick}
-            cards={cards}
-            onCardClick={handleCardClick}
-            onCardLike={handleCardLike}
-            onCardDelete={handleTrashClick}
-          />
-          <Route
-            path="*"
             element={
-              loggedIn ? (
-                <Navigate to="/" replace />
-              ) : (
-                <Navigate to="/sign-in" replace />
-              )
+              <ProtectedRoute
+              element={Main}
+              loggedIn={loggedIn}
+              onEditAvatar={handleEditAvatarClick}
+              onEditProfile={handleEditProfileClick}
+              onAddPlace={handleAddPlaceClick}
+              cards={cards}
+              onCardClick={handleCardClick}
+              onCardLike={handleCardLike}
+              onCardDelete={handleTrashClick}
+              />
             }
           />
+          <Route path="/sign-in" element={<Login handleLogin={handleLogin} />}></Route>
+          <Route path="/sign-up" element={<Register />}></Route>
+          <Route path="*" element={<Navigate to={loggedIn ? "/" : "/sign-in"} replace />} />
         </Routes>
         {loggedIn && <Footer />}
 

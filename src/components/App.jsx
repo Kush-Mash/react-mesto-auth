@@ -160,16 +160,10 @@ function App() {
       // проверим токен
       auth.checkToken(jwt)
         .then((res) => {
-          const userData = {
-            _id: res._id,
-            email: res.email
-          }
           // авторизуем пользователя
           setLoggedIn(true);
-          // setUserData(res);
-          setEmail(userData.email);
+          setEmail(res.data.email);
           navigate('/', {replace: true});
-          console.log(email);
         })
         .catch(err => console.log(err))
     }

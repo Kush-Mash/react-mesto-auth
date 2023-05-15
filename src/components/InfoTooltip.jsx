@@ -14,11 +14,11 @@ function InfoTooltip(props) {
         alt={props.isRegister
           ? 'Регистрация пройдена'
           : 'Регистрация не пройдена'} />
-      <h2 className="popup__title">
+      <h3 className="popup__message">
         {props.isRegister
           ? 'Вы успешно зарегистрировались!'
           : 'Что-то пошло не так! Попробуйте ещё раз.'}
-      </h2>
+      </h3>
       <button
         className="popup__close-button"
         type="button"

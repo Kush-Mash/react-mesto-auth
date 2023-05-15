@@ -10,7 +10,7 @@ function Header(props) {
       <Routes>
         <Route path='/' element={
           <div className='header__info'>
-            <span className='header__email'>{props.email}fdslkgj</span>
+            <span className='header__email'>{props.email}</span>
             <button className='header__exit' onClick={props.onSignOut}>Выйти</button>
           </div>
         } />

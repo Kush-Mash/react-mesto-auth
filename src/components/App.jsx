@@ -166,7 +166,6 @@ function App() {
       auth.checkToken(jwt)
         .then((res) => {
           // авторизуем пользователя
-          console.log(res);
           setLoggedIn(true);
           setEmail(res.data.email);
           navigate('/', {replace: true});
@@ -192,12 +191,10 @@ function App() {
         formValue.password,
       )
       .then(() => {
-        // setFormValue({ email: '', password: '' });
-        console.log(formValue);
+        setFormValue({ email: '', password: '' });
         setIsInfoTooltipPopupOpen(true);
         setIsRegister(true);
         navigate('/sign-in', {replace: true});
-        closeAllPopups();
       })
       .catch((err) => {
         console.log(err)
@@ -215,9 +212,9 @@ function App() {
       )
       .then((res) => {
         if (res){
+          setEmail(formValue.email);
           setFormValue({email: '', password: ''});
           handleLogin();
-          setEmail(res.data.email);
           navigate('/', {replace: true});
         }
       })

@@ -7,7 +7,7 @@ import { Navigate } from "react-router-dom";
 const ProtectedRoute = ({ element: Component, ...props  }) => {
   return (
     // Если авторизованы, то переход в Component, передав в props компонента props
-    // Если нет, то происходит редирект на /login
+    // Если нет, то происходит редирект на Login
     props.loggedIn ? <Component {...props} /> : <Navigate to="/sign-in" replace/>
 )}
 

@@ -213,10 +213,11 @@ function App() {
         formValue.email,
         formValue.password
       )
-      .then((data) => {
-        if (data){
+      .then((res) => {
+        if (res){
           setFormValue({email: '', password: ''});
           handleLogin();
+          setEmail(res.data.email);
           navigate('/', {replace: true});
         }
       })

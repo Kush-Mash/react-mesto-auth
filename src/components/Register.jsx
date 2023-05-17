@@ -12,7 +12,7 @@ function Register(props) {
         buttonText="Зарегистрироваться"
         onSubmit={props.handleRegisterSubmit}
         onChange={props.handleChange}
-        formValueEmail={props.formValue}
+        formValue={props.formValue}
       />
       <Link to="/sign-in" className="entry__link">
         Уже зарегистрированы? Войти
